@@ -9,5 +9,5 @@ that you need to resolve to make the alarm dismiss for good.
 
 Timers and Calendar reminders are not affected by this patch.
 
-**Note**: you won't find divisions, I don't hate myself *too* much to make
+**Note**: you won't find divisions, I don't hate myself *that* much to make
 my alarm ask me for a division at 5:30 AM :P
