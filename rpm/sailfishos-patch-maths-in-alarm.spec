@@ -14,7 +14,7 @@ Name:       sailfishos-patch-maths-in-alarm
 %{?qtc_builddir:%define _builddir %qtc_builddir}
 Summary:    maths-in-alarm
 Version:    1.0
-Release:    2
+Release:    3
 Group:      Applications/Productivity
 License:    GPL2
 URL:        http://me.medesimo.eu
