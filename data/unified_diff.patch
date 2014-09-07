@@ -1,0 +1,129 @@
+diff -druN alarm-ui-pages/AlarmDialogBase.qml alarm-ui-pages.new/AlarmDialogBase.qml
+--- orig/usr/share/jolla-alarm-ui/pages/AlarmDialogBase.qml	2014-09-06 23:47:09.230005067 +0200
++++ new/usr/share/jolla-alarm-ui/pages/AlarmDialogBase.qml	2014-09-07 18:41:46.759292147 +0200
+@@ -12,12 +12,15 @@
+     flickableDirection: Flickable.VerticalFlick
+ 
+     property QtObject alarm: dummy
++    
++    property bool dismissMenuVisible: true
+ 
+     property int status: -1
+     property alias topIconSource: topIcon.source
+     default property alias _content: content.children
+     property alias pushUpAnimationHint: pulleyAnimationHint.pushUpHint
+ 
++    signal dialogShown()
+     signal dialogHidden(int status)
+     signal timeout()
+ 
+@@ -31,6 +34,7 @@
+         opacity = 1.0
+         feedback.play()
+         timeoutTimer.start()
++        dialogShown()
+     }
+ 
+     function closeDialog(status) {
+@@ -74,6 +78,7 @@
+     }
+ 
+     PulleyAnimationHint {
++        visible: dismissMenuVisible
+         id: pulleyAnimationHint
+         anchors.fill: parent
+         pushUpHint: true
+@@ -103,6 +108,7 @@
+     }
+ 
+     Image {
++        visible: dismissMenuVisible
+         anchors {
+             bottom: parent.bottom
+             bottomMargin: Theme.paddingLarge
+@@ -112,6 +118,7 @@
+     }
+ 
+     PushUpMenu {
++        visible: dismissMenuVisible
+         quickSelect: true
+         Item { height: Theme.itemSizeExtraSmall; width: parent.width }
+         MenuItem {
+diff -druN alarm-ui-pages/ClockAlarmDialog.qml alarm-ui-pages.new/ClockAlarmDialog.qml
+--- orig/usr/share/jolla-alarm-ui/pages/ClockAlarmDialog.qml	2014-09-06 23:47:09.272005424 +0200
++++ new/usr/share/jolla-alarm-ui/pages/ClockAlarmDialog.qml	2014-09-07 18:57:32.514903317 +0200
+@@ -7,7 +7,54 @@
+     onTimeout: closeDialog(AlarmDialogStatus.Closed)
+ 
+     topIconSource: "image://theme/icon-l-snooze?" + Theme.highlightColor
++    
++    dismissMenuVisible: false
++
++    property string question
++    property int response
++    property variant operators: ["+", "-", "x"]
++    
++    function setup_question() {
++                
++        var one = Math.floor((Math.random() * 10) + 1);
++        var two = Math.floor((Math.random() * 10) + 1);
++
++        var operator = operators[Math.floor(Math.random() * 4)];
++
++        /* Ensure the first is the highest */
++        if (two > one) {
++            var hey = one;
++            one = two;
++            two = hey;
++        }
++
++        /*
++         * In some strange cases, the operator is undefined.
++         * Force it to be +.
++        */
++        (operator == undefined) ? operator = "+" : operator;
++
++        switch (operator) {
++
++        case "+":
++            response = one + two;
++            break;
++        case "-":
++            response = one - two;
++            break;
++        case "x":
++            response = one * two;
++            break;
++
++        }
++
++        question = "%1 %2 %3".arg(one).arg(operator).arg(two);
++        mathsField.focus = true;
+ 
++    }
++    
++    onDialogShown: setup_question()
++    
+     PullDownMenu {
+         quickSelect: true
+         MenuItem {
+@@ -71,4 +118,19 @@
+         text: alarm.title
+         wrapMode: Text.Wrap
+     }
++
++    TextField {
++
++        id: mathsField
++        width: parent.width
++        placeholderText: question
++        label: question
++        inputMethodHints: Qt.ImhDigitsOnly
++        onTextChanged: {
++            if (text == response) {
++                closeDialog(AlarmDialogStatus.Dismissed);
++            }
++        }
++    }
++
+ }
