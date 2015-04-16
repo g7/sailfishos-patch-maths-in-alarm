@@ -12,15 +12,17 @@ Name:       sailfishos-patch-maths-in-alarm
 %{!?qtc_qmake5:%define qtc_qmake5 %qmake5}
 %{!?qtc_make:%define qtc_make make}
 %{?qtc_builddir:%define _builddir %qtc_builddir}
-Summary:    maths-in-alarm
-Version:    1.0
-Release:    3
+Summary:    Maths in alarm
+Version:    1.1.4.28
+Release:    1
 Group:      Applications/Productivity
 License:    GPL2
+BuildArch:  noarch
 URL:        http://me.medesimo.eu
 Source0:    %{name}-%{version}.tar.bz2
 Source100:  sailfishos-patch-maths-in-alarm.yaml
 Requires:   patchmanager
+Requires:   sailfish-version >= 1.1.4-10.27.28.jolla
 
 %description
 A simple way to ensure that you will get up tomorrow :)
