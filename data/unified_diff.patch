@@ -47,7 +47,7 @@
      PushUpMenu {
 +        visible: dismissMenuVisible
          quickSelect: true
-         Item { height: Theme.itemSizeExtraSmall; width: parent.width }
+         topMargin: Theme.itemSizeExtraSmall
          MenuItem {
 --- a/usr/share/jolla-alarm-ui/pages/ClockAlarmDialog.qml
 +++ b/usr/share/jolla-alarm-ui/pages/ClockAlarmDialog.qml
@@ -63,7 +63,7 @@
 +    property variant operators: ["+", "-", "x"]
 +    
 +    function setup_question() {
-+                
++
 +        var one = Math.floor((Math.random() * 10) + 1);
 +        var two = Math.floor((Math.random() * 10) + 1);
 +
@@ -105,12 +105,11 @@
 +    
      PullDownMenu {
          quickSelect: true
-         MenuItem {
-@@ -71,4 +118,19 @@ AlarmDialogBase {
-         text: alarm.title
-         wrapMode: Text.Wrap
+         bottomMargin: Theme.itemSizeExtraSmall
+@@ -72,4 +119,20 @@ AlarmDialogBase {
+         }
      }
-+
+ 
 +    TextField {
 +
 +        id: mathsField
@@ -124,5 +123,7 @@
 +            }
 +        }
 +    }
++
++
 +
  }
