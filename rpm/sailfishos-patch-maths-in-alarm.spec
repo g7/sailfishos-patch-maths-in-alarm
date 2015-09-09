@@ -54,6 +54,14 @@ rm -rf %{buildroot}
 # >> install post
 # << install post
 
+
+%preun
+# >> preun
+if [ -x /usr/sbin/patchmanager ]; then
+/usr/sbin/patchmanager -u eugenio-maths-in-alarm || true
+fi
+# << preun
+
 %files
 %defattr(-,root,root,-)
 %{_datadir}/patchmanager
