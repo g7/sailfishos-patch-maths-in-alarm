@@ -22,8 +22,8 @@ INSTALLS += \
 
 
 OTHER_FILES += \
-    rpm/sailfishos-patch-maths-in-alarm.changes.in \
     rpm/sailfishos-patch-maths-in-alarm.spec \
     rpm/sailfishos-patch-maths-in-alarm.yaml \
     data/unified_diff.patch \
-    data/patch.json
+    data/patch.json \
+    rpm/sailfishos-patch-maths-in-alarm.changes
