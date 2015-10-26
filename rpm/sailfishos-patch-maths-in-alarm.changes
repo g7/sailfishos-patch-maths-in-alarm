@@ -8,6 +8,10 @@
 # * date Author's Name <author's email> version-release
 # - Summary of changes
 
+* Mon Oct 26 2015 Eugenio "g7" Paolantonio <me@medesimo.eu> 2.0.0.10-1
+- [patch] Use a new, built-in keyboard to make it work in act dead mode
+- [packaging] Lower (yup, really) the jolla-alarm-ui requirement to match Saimaa
+
 * Wed Sep 09 2015 Eugenio "g7" Paolantonio <me@medesimo.eu> 1.1.9.28-1
 - [patch] Updated for Eineheminlampi
 - [gitignore] Ignore older user files

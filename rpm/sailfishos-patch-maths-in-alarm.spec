@@ -13,7 +13,7 @@ Name:       sailfishos-patch-maths-in-alarm
 %{!?qtc_make:%define qtc_make make}
 %{?qtc_builddir:%define _builddir %qtc_builddir}
 Summary:    Maths in alarm
-Version:    1.1.9.28
+Version:    2.0.0.10
 Release:    1
 Group:      Applications/Productivity
 License:    GPL2
@@ -23,7 +23,7 @@ Source0:    %{name}-%{version}.tar.bz2
 Source100:  sailfishos-patch-maths-in-alarm.yaml
 Requires:   patchmanager
 Requires:   sailfish-version >= 1.1.9-10.33.28.jolla
-Requires:   jolla-alarm-ui >= 0.1.33-10.24.1.jolla
+Requires:   jolla-alarm-ui >= 0.1.33-10.23.2.jolla
 
 %description
 A simple way to ensure that you will get up tomorrow :)
