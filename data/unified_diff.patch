@@ -51,23 +51,29 @@
          MenuItem {
 --- a/usr/share/jolla-alarm-ui/pages/ClockAlarmDialog.qml
 +++ b/usr/share/jolla-alarm-ui/pages/ClockAlarmDialog.qml
-@@ -7,7 +7,54 @@ AlarmDialogBase {
-     onTimeout: closeDialog(AlarmDialogStatus.Closed)
+@@ -8,6 +8,54 @@ AlarmDialogBase {
  
      topIconSource: "image://theme/icon-l-snooze?" + Theme.highlightColor
-+    
-+    dismissMenuVisible: false
  
++    dismissMenuVisible: false
++
 +    property string question
 +    property int response
 +    property variant operators: ["+", "-", "x"]
-+    
++
++    anchors {
++        fill: parent
++        bottomMargin: keyb.margin
++    }
++
++    contentHeight: parent.height - keyb.visibleSize
++
 +    function setup_question() {
 +
 +        var one = Math.floor((Math.random() * 10) + 1);
 +        var two = Math.floor((Math.random() * 10) + 1);
 +
-+        var operator = operators[Math.floor(Math.random() * 4)];
++        var operator = operators[Math.floor(Math.random() * 3)];
 +
 +        /* Ensure the first is the highest */
 +        if (two > one) {
@@ -75,12 +81,6 @@
 +            one = two;
 +            two = hey;
 +        }
-+
-+        /*
-+         * In some strange cases, the operator is undefined.
-+         * Force it to be +.
-+        */
-+        (operator == undefined) ? operator = "+" : operator;
 +
 +        switch (operator) {
 +
@@ -100,23 +100,23 @@
 +        mathsField.focus = true;
 +
 +    }
-+    
++
 +    onDialogShown: setup_question()
-+    
++
      PullDownMenu {
          quickSelect: true
          bottomMargin: Theme.itemSizeExtraSmall
-@@ -72,4 +119,20 @@ AlarmDialogBase {
+@@ -72,4 +120,42 @@ AlarmDialogBase {
          }
      }
  
 +    TextField {
-+
 +        id: mathsField
 +        width: parent.width
 +        placeholderText: question
 +        label: question
-+        inputMethodHints: Qt.ImhDigitsOnly
++        softwareInputPanelEnabled: false
++        onClicked: keyb.show()
 +        onTextChanged: {
 +            if (text == response) {
 +                closeDialog(AlarmDialogStatus.Dismissed);
@@ -124,6 +124,148 @@
 +        }
 +    }
 +
++    Component.onCompleted: {
++        /* stroke signal */
++        keyb.stroke.connect(function(key) {
++            var position = mathsField.cursorPosition
++            mathsField.text = mathsField.text.substring(0, position)
++                              + key
++                              + mathsField.text.substring(position, mathsField.text.length)
++            mathsField.cursorPosition = position+1
++        })
 +
++        /* backspaceStroke signal */
++        keyb.backspaceStroke.connect(function() {
++            if (mathsField.cursorPosition > 0) {
++                var position = mathsField.cursorPosition
++                mathsField.text = mathsField.text.substring(0, position-1)
++                                  + mathsField.text.substring(position, mathsField.text.length)
++                mathsField.cursorPosition = position-1
++            }
++        })
++
++        /* Open keyboard */
++        keyb.show()
++    }
 +
  }
+--- a/usr/share/jolla-alarm-ui/jolla-alarm-ui.qml
++++ b/usr/share/jolla-alarm-ui/jolla-alarm-ui.qml
+@@ -238,6 +238,17 @@ ApplicationWindow {
+                 onDialogHidden: page.dialogHidden(status)
+             }
+ 
++            Keyboard {
++                id: keyb
++                z: 100
++                onOpenChanged: {
++                    /* Remove focus from the fields when closing the keyboard */
++                    if (!open) {
++                        parent.forceActiveFocus();
++                    }
++                }
++            }
++
+             Component.onCompleted: quitTimer.start()
+         }
+     }
+--- /dev/null
++++ b/usr/share/jolla-alarm-ui/pages/Keyboard.qml
+@@ -0,0 +1,51 @@
++import QtQuick 2.0
++import Sailfish.Silica 1.0
++
++DockedPanel {
++    id: keyboard
++
++    dock: Dock.Bottom
++
++    width: parent.width
++    height: grid.height
++
++    signal stroke (string key)
++    signal backspaceStroke
++
++    Grid {
++        id: grid
++        columns: 3
++        anchors.horizontalCenter: parent.horizontalCenter
++
++        Repeater {
++            id: rowRepeater
++            model: 9
++
++            KeyboardButton {
++                text: index+1
++
++                onClicked: stroke(text)
++            }
++        }
++
++        Item {
++            width: Theme.itemSizeExtraLarge
++            height: Theme.itemSizeMedium
++        }
++
++        KeyboardButton {
++            text: "0"
++
++            onClicked: stroke(text)
++        }
++
++        KeyboardButton {
++            text: "icon-m-backspace"
++            isImage: true
++
++            onClicked: backspaceStroke()
++        }
++
++    }
++
++}
+--- /dev/null
++++ b/usr/share/jolla-alarm-ui/pages/KeyboardButton.qml
+@@ -0,0 +1,43 @@
++import QtQuick 2.0
++import Sailfish.Silica 1.0
++
++BackgroundItem {
++    id: button
++
++    property string text
++    property bool isImage: false
++
++    height: Theme.itemSizeMedium
++    width: Theme.itemSizeExtraLarge
++
++    Loader {
++        active: isImage
++        width: parent.width
++        height: parent.height
++        sourceComponent: Item { Image {
++            source: "image://theme/%1?%2".arg(button.text).arg(button.down
++                    ? Theme.highlightColor
++                    : Theme.primaryColor)
++            anchors.centerIn: parent
++        }}
++    }
++
++    Loader {
++        active: !isImage
++        width: parent.width
++        height: parent.height
++        sourceComponent: Label {
++            font {
++                pixelSize: Theme.fontSizeLarge
++            }
++
++            horizontalAlignment: Text.AlignHCenter
++            verticalAlignment: Text.AlignVCenter
++
++            anchors.centerIn: parent
++            text: button.text
++            color: button.down ? Theme.highlightColor : Theme.primaryColor
++        }
++    }
++
++}
