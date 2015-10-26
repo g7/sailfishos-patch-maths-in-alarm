@@ -31,7 +31,7 @@ Builder: qtc5
 Requires:
   - patchmanager
   - sailfish-version >= 1.1.9-10.33.28.jolla
-  - jolla-alarm-ui >= 0.1.33-10.24.1.jolla
+  - jolla-alarm-ui >= 0.1.33-10.23.2.jolla
 
 # All installed files
 Files:
