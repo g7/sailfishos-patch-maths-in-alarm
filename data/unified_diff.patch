@@ -106,7 +106,7 @@
      PullDownMenu {
          quickSelect: true
          bottomMargin: Theme.itemSizeExtraSmall
-@@ -72,4 +120,42 @@ AlarmDialogBase {
+@@ -72,4 +120,39 @@ AlarmDialogBase {
          }
      }
  
@@ -143,21 +143,19 @@
 +                mathsField.cursorPosition = position-1
 +            }
 +        })
-+
-+        /* Open keyboard */
-+        keyb.show()
 +    }
 +
  }
 --- a/usr/share/jolla-alarm-ui/jolla-alarm-ui.qml
 +++ b/usr/share/jolla-alarm-ui/jolla-alarm-ui.qml
-@@ -238,6 +238,17 @@ ApplicationWindow {
+@@ -238,6 +238,18 @@ ApplicationWindow {
                  onDialogHidden: page.dialogHidden(status)
              }
  
 +            Keyboard {
 +                id: keyb
 +                z: 100
++                open: displayedAlarm.type === Alarm.Clock
 +                onOpenChanged: {
 +                    /* Remove focus from the fields when closing the keyboard */
 +                    if (!open) {
